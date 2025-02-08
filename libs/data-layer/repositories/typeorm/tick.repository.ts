@@ -18,7 +18,15 @@ export class TickRepository {
     await this.repository.save(data);
   }
 
-  async findTicks(): Promise<TickEntity[]> {
-    return this.repository.find();
+  async findTicksByPoolId(
+    poolId: number,
+    page: number,
+    pageSize: number,
+  ): Promise<TickEntity[]> {
+    return this.repository.find({
+      where: { poolId },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    });
   }
 }

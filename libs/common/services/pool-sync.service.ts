@@ -5,13 +5,14 @@ import { UniswapV3Service } from '../../../src/app.service';
 import { Pool } from '../interfaces/pool.interface';
 import { Tick } from '../interfaces/tick.interface';
 import { devConfig } from '../env-config/dev.configuration';
+import { getPoolSyncURL } from '../utils/pool.util';
 
 @Injectable()
 export class PoolSyncService {
   private readonly client: GraphQLClient;
   constructor(private readonly uniswapV3Service: UniswapV3Service) {
     this.client = new GraphQLClient(
-      `https://gateway.thegraph.com/api/${process.env.API_KEY}/subgraphs/id/${process.env.SUBGRAPH_ID}`,
+      getPoolSyncURL(process.env.API_KEY, process.env.SUBGRAPH_ID),
     );
   }
 
@@ -21,6 +22,11 @@ export class PoolSyncService {
     console.log('Starting uniswap pool sync');
     const pools = await this.fetchPools();
     const filteredPools = await this.uniswapV3Service.filterPools(pools);
+
+    if (!filteredPools.length) {
+      return;
+    }
+
     const ticks = await this.fetchTicks(filteredPools.map((pool) => pool.id));
 
     await this.uniswapV3Service.createPools(filteredPools);

@@ -5,6 +5,7 @@ import { TickRepository } from '../libs/data-layer/repositories/typeorm/tick.rep
 import { Pool } from '../libs/common/interfaces/pool.interface';
 import { Tick } from '../libs/common/interfaces/tick.interface';
 import { devConfig } from '../libs/common/env-config/dev.configuration';
+import { TickEntity } from '../libs/data-layer/entities/typeorm/tick.entity';
 
 @Injectable()
 export class UniswapV3Service {
@@ -70,7 +71,8 @@ export class UniswapV3Service {
     return this.poolRepository.findPools(page, pageSize);
   }
 
-  async getPoolTicks(poolId: number): Promise<PoolsEntity> {
-    return this.poolRepository.findTicksByPoolId(poolId);
+  async getTicksByPoolId(poolId: number, page: number): Promise<TickEntity[]> {
+    const pageSize = devConfig.TICK_LIST_PAGE_SIZE;
+    return this.tickRepository.findTicksByPoolId(poolId, page, pageSize);
   }
 }
