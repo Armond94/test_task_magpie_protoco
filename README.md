@@ -17,6 +17,16 @@ $ yarn run start
 $ yarn run start:dev
 ```
 
+## production build
+```
+$ yarn run build
+
+# start the production server
+$ yarn run start:prod
+
+```
+
+
 ### Set environment variables
 
 #### Navigate to the project root in terminal
